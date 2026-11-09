@@ -6,13 +6,15 @@
 <title>Super Mario Web</title>
 <style>
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-  html,body{margin:0;height:100%;background:#151528;font-family:'Trebuchet MS',system-ui,sans-serif;color:#fff;overflow:hidden}
+  html,body{margin:0;height:100%;background:#5c94fc;font-family:'Trebuchet MS',system-ui,sans-serif;color:#fff;overflow:hidden}
   #wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;width:100vw;height:100vh;padding:0;margin:0;gap:0;position:relative}
   #hud{position:absolute;top:10px;display:flex;gap:26px;font-weight:bold;font-size:17px;letter-spacing:1px;text-shadow:0 2px 0 #000;z-index:10}
-  canvas{background:#5c94fc;width:100%;height:100%;object-fit:contain;image-rendering:pixelated;display:block;}
+  canvas{background:#5c94fc;width:100vw;height:100vh;object-fit:fill;image-rendering:pixelated;display:block;margin:0;padding:0;position:absolute;top:0;left:0;}
   .tip{font-size:12px;opacity:.6;text-align:center;position:absolute;bottom:10px;width:100%;z-index:10;}
-  #touch{display:none;gap:12px;position:absolute;bottom:20px;width:100%;justify-content:center;z-index:10;}
-  #touch button{width:64px;height:56px;border-radius:14px;border:2px solid #fff3;background:#ffffff1a;color:#fff;font-size:22px;font-weight:bold;user-select:none}
+  #touch{display:none;position:absolute;bottom:20px;width:100%;justify-content:space-between;padding:0 30px;z-index:10;box-sizing:border-box;pointer-events:none;}
+  .dpad{display:flex;gap:15px;pointer-events:auto;}
+  .action{display:flex;pointer-events:auto;}
+  #touch button{width:75px;height:75px;border-radius:50%;border:3px solid rgba(255,255,255,0.4);background:rgba(0,0,0,0.2);color:#fff;font-size:30px;font-weight:bold;user-select:none;-webkit-user-select:none;touch-action:none;display:flex;align-items:center;justify-content:center;}
   body.mobile #touch{display:flex}
   body.mobile .tip{display:none}
 </style>
@@ -26,9 +28,13 @@
   </div>
   <canvas id="cv" width="800" height="480"></canvas>
   <div id="touch">
-    <button id="bL">◀</button>
-    <button id="bR">▶</button>
-    <button id="bJ">▲</button>
+    <div class="dpad">
+      <button id="bL">◀</button>
+      <button id="bR">▶</button>
+    </div>
+    <div class="action">
+      <button id="bJ">▲</button>
+    </div>
   </div>
   <div class="tip">← → mover &nbsp;•&nbsp; ESPAÇO / ↑ pular &nbsp;•&nbsp; fique em cima de um tubo e aperte ↑ para entrar na fase</div>
 </div>
@@ -45,6 +51,8 @@ const elLvl = document.getElementById('lvl');
 
 const keys = {};
 const just = {};
+
+window.addEventListener('contextmenu', e => e.preventDefault());
 
 addEventListener('keydown', e => {
   if (!keys[e.code]) just[e.code] = true;
@@ -63,6 +71,9 @@ function bindBtn(id, code) {
   el.addEventListener('mousedown', down);
   el.addEventListener('mouseup', up);
   el.addEventListener('mouseleave', up);
+  el.addEventListener('pointerdown', down);
+  el.addEventListener('pointerup', up);
+  el.addEventListener('pointerleave', up);
 }
 bindBtn('bL', 'ArrowLeft');
 bindBtn('bR', 'ArrowRight');
